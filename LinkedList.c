@@ -1,296 +1,216 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
+    #include<stdio.h>
+    #include<conio.h>
+    #include<stdlib.h>
 
-struct Node
-{
+    void insertAtBeginning();
+    void insertAtEnd();
+    void insertBetween();
+    void display();
+    void removeBeginning();
+    void removeEnd();
+    void removeSpecific();
+
+    struct Node
+    {
     int data;
-    struct Node *link;
-};
-typedef struct Node Node;
-Node *getnode();
+    struct Node *next;
+    }*head = NULL;
 
-void main()
-{
-    Node *first;
-    int choice, item, pos, n,ser;
+    void main()
+    {
+    int choice,value,choice1,loc1,loc2;
     clrscr();
-    InitializeLList(&first);
-    printf("\nHow many nodes you want to create: ");
-    scanf("%d", &n);
-    LListCreate(&first, n);
-    while (1)
+    while(1){
+    mainMenu: printf("\n1. Insert\n2. Display\n3. Delete\n4. Exit\nEnter your choice: ");
+    scanf("%d",&choice);
+    switch(choice)
     {
-	printf("\n1.Insert at First: ");
-	printf("\n2.Insert at Last: ");
-	printf("\n3.Insertion at any specific location: ");
-	printf("\n4.Deletion from First: ");
-	printf("\n5.Deletion from Last: ");
-	printf("\n6.Deletion from any specific location: ");
-	printf("\n7. Display");
-	printf("\n8. Exit");
-	printf("\nEnter your choice: ");
-	scanf("%d",&choice);
-	switch (choice)
-	{
-	    case 1:
-		printf("\nEnter the item: ");
-		    scanf("%d",&item);
-		    InsertLListFirst(&first,item);
-		    break;
+        case 1: 	printf("Enter the value to be insert: ");
+            scanf("%d",&value);
+            while(1){
+            printf("Where you want to insert: \n1. At Beginning\n2. At End\n3. Between\nEnter your choice: ");
+            scanf("%d",&choice1);
+            switch(choice1)
+            {
+            case 1: 	insertAtBeginning(value);
+                    break;
+            case 2: 	insertAtEnd(value);
+                    break;
+            case 3:      printf("Enter the two values where you wanto insert: ");
+                    scanf("%d%d",&loc1,&loc2);
+                    insertBetween(value,loc1,loc2);
+                    break;
+            default: 	printf("\nWrong Input!! Try again!!!\n\n");
+                    goto mainMenu;
+            }
+            goto subMenuEnd;
+            }
+            subMenuEnd:
+            break;
 
-	    case 2:printf("\nEnter the item: ");
-		    scanf("%d",&item);
-		    InsertLListLast(&first,item);
-		    break;
-	    case 3:
-		printf("\nEnter the item: ");
-		    scanf("%d",&item);
-		    printf("\nEnter the node number where you want to insert the item: ");
-		    scanf("%d",&pos);
-		    InsertLListAtAny (&first,item,pos);
-		    break;
-	    case 4:
-		DeleteLListFirst(&first);
-	            break;
-            case 5:
-                DeleteLListLast(&first);
-	            break;
-            case 6:
-                printf("\nEnter the node number you want to delete: ");
-	            scanf("%d",&pos);
-	            DeleteLListAny (&first,pos);
-	            break;
-            case 7:
-                TraverseLList(first);
-	            break;
-            case 8: 
+        case 2: 	
+                display();
+                break;
+        case 3: 	
+                printf("How do you want to Delete: \n1. From Beginning\n2. From End\n3. Spesific\nEnter your choice: ");
+                scanf("%d",&choice1);
+                switch(choice1)
+                {
+                    case 1: 	
+                        removeBeginning();
+                        break;
+                    case 2: 	
+                        removeEnd();
+                        break;
+                    case 3:      
+                        printf("Enter the value which you wanto delete: ");
+                        scanf("%d",&loc2);
+                        removeSpecific(loc2);
+                        break;
+                    default: 	
+                        printf("\nWrong Input!! Try again!!!\n\n");
+                    goto mainMenu;
+                }
+                break;
+        case 4: 
                 exit(0);
+        default:
+            printf("\nWrong input!!! Try again!!\n\n");
+    }
+    }
+    }
 
-        }
-    }
-}
-InitializeLList(Node **first)
-{
-    (*first)=NULL;
-}
-
-LListCreate(Node **f, int n)
-{
-    Node *temp, *current;
-    int i, item;
-    for(i=1; i<=n; i++)
+    void insertAtBeginning(int value)
     {
-        printf("Enter the data field of Node :");
-        scanf("%d", &item);
-        temp = getnode();
-        temp->data = item;
-        temp->link = NULL;
-        if (*f == NULL)
-            *f = temp;
-        else
-            current->link = temp;
-        current = temp;
-    }
-}
-TraverseLList(Node *first)
-{
-    printf("\nStart => ");
-    while (first != NULL)
+    struct Node *newNode;
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    if(head == NULL)
     {
-        printf("%d -> ",first->data);
-        first=first->link;
+        newNode->next = NULL;
+        head = newNode;
     }
-    printf("End\n");
-}
-InsertLListFirst (Node **first, int item)
-{
-    Node *temp;
-    temp=getnode();
-    if (temp==NULL)
-    {
-        printf("\nUnable to create a new node. ");
-        return;
-    }
-    temp->data=item;
-    temp->link=(*first);
-    (*first)=temp;
-}
-
-InsertLListLast(Node **first,int item)
-{
-    Node *temp, *current;
-    temp=getnode();
-    if (temp==NULL)
-    {
-        printf("\nUnable to create a new node. ");
-        return;
-    }
-    temp->data=item;
-    temp->link=NULL;
-    if(* first==NULL)
-        (*first)=temp;
     else
     {
-        current=(*first);
-        while (current->link!=NULL)
-            current= current->link;
-        current->link=temp;
+        newNode->next = head;
+        head = newNode;
     }
-}
-
-InsertLListAtAny(Node **first,int item,int pos)
-{
-    Node *current,*previous,*temp;
-    int i;
-    temp=getnode();
-    if (temp==NULL)
+    printf("\nOne node inserted!!!\n");
+    }
+    void insertAtEnd(int value)
     {
-        printf("\nUnable to create a new node. ");
-        return;
-    }
-    if((*first==NULL)||(pos== 1))
-    {
-        temp->data=item;
-        temp->link=(*first);
-        (*first)=temp;
-        return;
-    }
-    current= (*first)->link;
-    previous= (*first);
-    i=1;
-    while(current!= NULL)
-    {
-        if((i+1) == pos)
-            break;
-        else
-        {
-            previous=current;
-            current= current->link;
-            i++;
-        }
-    }
-    temp->data = item;
-    temp->link = current;
-    previous->link = temp;
-}
-
-DeleteLListFirst(Node **first)
-{
-    Node *current;
-    int item;
-    if (*first==NULL)
-    {
-        printf("\nList is empty. ");
-        return;
-    }
-    current = (*first);
-    item= current ->data;
-    (*first) = (*first)->link;
-    freenode(current);
-    printf("\nDeleted item = %d", item);
-}
-
-
-DeleteLListLast(Node **first)
-{
-    Node *current, *previous;
-    int item;
-    if (*first == NULL)
-    {
-        printf("\nList is empty. ");
-        return;
-    }
-    current = (*first);
-    previous=NULL;
-    if ((*first)->link == NULL)
-        (*first) = (*first)->link;
+    struct Node *newNode;
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+    if(head == NULL)
+        head = newNode;
     else
     {
-        while (current->link != NULL)
-        {
-            previous= current;
-            current= current->link;
-        }
-        previous->link = current->link;
+        struct Node *temp = head;
+        while(temp->next != NULL)
+        temp = temp->next;
+        temp->next = newNode;
     }
-    item=current->data;
-    freenode(current);
-    printf("\nDeleted item = %d", item);
-}
+    printf("\nOne node inserted!!!\n");
+    }
+    void insertBetween(int value, int loc1, int loc2)
+    {
+    struct Node *newNode;
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    if(head == NULL)
+    {
+        newNode->next = NULL;
+        head = newNode;
+    }
+    else
+    {
+        struct Node *temp = head;
+        while(temp->data != loc1 && temp->data != loc2)
+        temp = temp->next;
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+    printf("\nOne node inserted!!!\n");
+    }
 
-DeleteLListAny (Node **first, int pos)
-{  
-    Node *current, *previous;
-    int item, i;
-    if (*first == NULL)
+    void removeBeginning()
     {
-        printf("\nList is empty. ");
-        return;
-    }
-    if(pos == 1)
+    if(head == NULL)
+        printf("\n\nList is Empty!!!");
+    else
     {
-        current = (*first);
-        item=current->data;
-        (*first)= (*first)->link;
-        freenode(current);
-        printf("\nDeleted item = %d", item);
-        return;
-    }
-    current = (*first)->link;
-    previous=(*first);
-    i=2;
-    while (current != NULL)
-    {
-        if(i == pos)
+        struct Node *temp = head;
+        if(head->next == NULL)
         {
-            previous->link = current->link;
-            item= current->data;
-            freenode(current);
-            printf("\nDeleted item = %d",item);
+        head = NULL;
+        free(temp);
         }
         else
         {
-            previous = current;
-            current = current->link;
+        head = temp->next;
+        free(temp);
+        printf("\nOne node deleted!!!\n\n");
         }
-        i++;
     }
-}
-
-Search(Node *first,int item)
-{
-    int temp=1,flag=0;
-    if(first==NULL)
-    {
-        printf("List is empty");
-        return;
     }
-    while(first!=NULL)
+    void removeEnd()
     {
-        if(first -> data == item)
+    if(head == NULL)
+    {
+        printf("\nList is Empty!!!\n");
+    }
+    else
+    {
+        struct Node *temp1 = head,*temp2;
+        if(head->next == NULL)
+        head = NULL;
+        else
         {
-            flag=1;
-            break;
+        while(temp1->next != NULL)
+        {
+            temp2 = temp1;
+            temp1 = temp1->next;
         }
-        else
-            first = first ->link;
-            temp++;
+        temp2->next = NULL;
+        }
+        free(temp1);
+        printf("\nOne node deleted!!!\n\n");
     }
-        if(flag==1)
-            printf("item found at position : %d",temp);
-        else
-            printf("item not found");
-}
-
-Node *getnode()
-{
-  Node *p;
-  p = (Node *)malloc(sizeof(Node));
-  return (p);
-}
-
-freenode(Node *p)
-{
-  free(p);
-}
+    }
+    void removeSpecific(int delValue)
+    {
+    struct Node *temp1 = head, *temp2;
+    while(temp1->data != delValue)
+    {
+        if(temp1 -> next == NULL){
+        printf("\nGiven node not found in the list!!!");
+        goto functionEnd;
+        }
+        temp2 = temp1;
+        temp1 = temp1 -> next;
+    }
+    temp2 -> next = temp1 -> next;
+    free(temp1);
+    printf("\nOne node deleted!!!\n\n");
+    functionEnd:
+    }
+    void display()
+    {
+    if(head == NULL)
+    {
+        printf("\nList is Empty\n");
+    }
+    else
+    {
+        struct Node *temp = head;
+        printf("\n\nList elements are - \n");
+        while(temp->next != NULL)
+        {
+        printf("%d --->",temp->data);
+        temp = temp->next;
+        }
+        printf("%d --->NULL",temp->data);
+    }
+    }
