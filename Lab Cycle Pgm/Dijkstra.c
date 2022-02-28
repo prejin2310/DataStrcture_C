@@ -77,4 +77,4 @@ j=pred[j];
 printf("<-%d",j);
 }while(j!=startnode);
 }
-}diji
+}
